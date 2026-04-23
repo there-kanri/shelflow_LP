@@ -1,17 +1,29 @@
 document.addEventListener("DOMContentLoaded", function () {
-
   const btn = document.getElementById("calcBtn");
+  const ordersInput = document.getElementById("orders");
+  const skuInput = document.getElementById("sku");
+  const workersInput = document.getElementById("workers");
 
-  btn.addEventListener("click", function () {
+  function resetResult() {
+    document.getElementById("resultEfficiency").innerText = "--";
+    document.getElementById("resultCost").innerText = "--";
+    document.getElementById("resultPayback").innerText = "--";
+  }
+
+  function calculate(options) {
+    const showAlert = options && options.showAlert;
 
     // 入力値取得
-    const orders = Number(document.getElementById("orders").value);
-    const sku = Number(document.getElementById("sku").value);
-    const workers = Number(document.getElementById("workers").value);
+    const orders = Number(ordersInput.value);
+    const sku = Number(skuInput.value);
+    const workers = Number(workersInput.value);
 
     // 入力チェック
     if (!orders || !sku || !workers) {
-      alert("すべての項目を入力してください");
+      resetResult();
+      if (showAlert) {
+        alert("すべての項目を入力してください");
+      }
       return;
     }
 
@@ -56,10 +68,16 @@ document.addEventListener("DOMContentLoaded", function () {
       "▲" + Math.floor(costDiff * 22).toLocaleString() + "円/月";
 
     document.getElementById("resultPayback").innerText =
-      paybackMonths > 0
-        ? "約" + paybackMonths.toFixed(1) + "ヶ月"
-        : "-";
+      paybackMonths > 0 ? "約" + paybackMonths.toFixed(1) + "ヶ月" : "-";
+  }
 
+  btn.addEventListener("click", function () {
+    calculate({ showAlert: true });
   });
 
+  [ordersInput, skuInput, workersInput].forEach(function (input) {
+    input.addEventListener("input", function () {
+      calculate({ showAlert: false });
+    });
+  });
 });
